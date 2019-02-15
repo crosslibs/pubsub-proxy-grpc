@@ -9,4 +9,4 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ["build", "--tag=gcr.io/$PROJECT_ID/pubsub-proxy-grpc", "."]
   dir: 'pubsub-proxy-grpc'
-images: ['gcr.io/$PROJECT_ID/pubsub-proxy-grpc']
+images: ['gcr.io/$PROJECT_ID/pubsub-proxy-grpc'] 
