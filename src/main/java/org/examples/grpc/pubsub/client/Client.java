@@ -18,10 +18,10 @@ import io.grpc.StatusRuntimeException;
 /**
  * Client stub - Provide examples to the available gRPC endpoints:
  * 
- * 1) /getaccesstoken: Validates the client id and generates a JWT signed by service account. 
- * This access token is used to authenticate calls to /publish
+ * 1) /getaccesstoken: Validates the client id and generates a JWT signed by
+ * service account. This access token is used to authenticate calls to /publish
  * 
- * 2) /pulish: Publishes messages downstream to google cloud pubsub 
+ * 2) /pulish: Publishes messages downstream to google cloud pubsub
  * 
  */
 public class Client {
@@ -32,19 +32,18 @@ public class Client {
 
 	/**
 	 * Create gRPC client
+	 * 
 	 * @param host
 	 * @param port
 	 * @throws Exception
 	 * 
-	 * Channels are secure by default (via SSL/TLS). 
-	 * For the example we disable TLS to avoid needing certificates.
+	 * Channels are secure by default (via SSL/TLS). For the example we
+	 * disable TLS to avoid needing certificates.
 	 *
 	 */
-	public Client(String host, int port) throws Exception 
-	{
-		this(ManagedChannelBuilder.forAddress(host, port)
-				.usePlaintext().build());
-				
+	public Client(String host, int port) throws Exception {
+		this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build());
+
 	}
 
 	Client(ManagedChannel channel) {
@@ -52,33 +51,29 @@ public class Client {
 		blockingStub = PubsubProxyServiceGrpc.newBlockingStub(channel);
 	}
 
-	
 	public void shutdown() throws InterruptedException {
 		channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
 	}
 
 	// Get access token
 	public void getAccessToken() {
-		
+
 		TokenRequest request = TokenRequest.newBuilder().build();
 		TokenResponse response;
-		
-		try 
-		{
+
+		try {
 			response = blockingStub.getAccessToken(request);
-		} 
-		catch (StatusRuntimeException e) 
-		{
+		} catch (StatusRuntimeException e) {
 			logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
 			return;
 		}
-		
+
 		logger.info("Token: " + response.getToken());
 	}
 
 	// Publish message
 	public void publish() {
-		
+
 		// -------------------------------------------------
 		// Placeholders left, fill with appropriate values
 		// --------------------------------------------------
@@ -87,40 +82,32 @@ public class Client {
 				.setMessageId("<message-id>")
 				.setAttributes("{\"key\": \"value\"}")
 				.build();
-		
+
 		PublishRequest pubreq = PublishRequest.newBuilder()
 				.setTopic("<topic>")
-				.setMessage(msg)
-				.build();
-		
+				.setMessage(msg).build();
+
 		PublishResponse pubresponse;
-		
-		try 
-		{
+
+		try {
 			pubresponse = blockingStub.publish(pubreq);
-		}
-		catch (StatusRuntimeException e) 
-		{
+		} catch (StatusRuntimeException e) {
 			logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
 			return;
 		}
-		
 		logger.info("Done publish: " + pubresponse.getMessageId());
 	}
-	
-	
+
 	public static void main(String[] args) throws Exception {
 
 		// ---------------------------------------------
 		// Replace following with gRPC server endpoint
 		// ----------------------------------------------
 		Client client = new Client("localhost", 80);
-		
 		try {
 			client.getAccessToken();
 			client.publish();
-		} 
-		finally {
+		} finally {
 			client.shutdown();
 		}
 	}
