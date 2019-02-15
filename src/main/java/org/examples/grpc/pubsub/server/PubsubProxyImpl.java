@@ -43,14 +43,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * 3) /health: Health check for glb/ingress. Returns 200Ok.
  * 
  */
-
 public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceImplBase {
-
 	// Locally store topic-to-publisher handler
 	private HashMap<String, Publisher> publishers = new HashMap<String, Publisher>();
-
 	private static final Logger logger = Logger.getLogger(PubsubProxyImpl.class.getName());
-
 	/**
 	 * 
 	 * Get JWT access token signed by user passed service account
@@ -71,12 +67,9 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 	 * audience: google cloud endpoint hosting transcoded RPCs
 	 * 
 	 */
-
 	@Override
 	public void getAccessToken(TokenRequest req, StreamObserver<TokenResponse> responseObserver) {
-
 		try {
-
 			JwtBuilder jwts = Jwts.builder();
 			ServiceAccountCredentials serviceAccount = ServerInit.getServiceAccount();
 
@@ -103,14 +96,11 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 
 			responseObserver.onNext(reply);
 			responseObserver.onCompleted();
-
 		}
-
 		catch (Exception e) {
 			e.printStackTrace();
 			// TODO
 		}
-		
 		/**
 		 * 
 		 * Alternate way of signing JWT without requiring json credentials file: 
@@ -146,7 +136,6 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 		 */
 	}
 	
-
 	/**
 	 * 
 	 * Publish message downstream to Google Cloud Pubsub
@@ -173,7 +162,6 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 	public void publish(PublishRequest request, StreamObserver<PublishResponse> responseObserver) {
 
 		try {
-
 			String topic = request.getTopic();
 
 			// Get publisher
@@ -191,13 +179,11 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 			responseObserver.onCompleted();
 
 		}
-
 		catch (Exception ex) {
 			//TODO
 			ex.printStackTrace();
 		}
 	}
-
 	/**
 	 * 
 	 * @param publisher
@@ -205,7 +191,6 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 	 */
 	@SuppressWarnings("unchecked")
 	private void publishMessage(Publisher publisher, PublishRequest request) throws Exception {
-
 		final org.examples.grpc.pubsub.generated.PubsubMessage message = request.getMessage();
 		Builder builder = PubsubMessage.newBuilder();
 		
@@ -220,31 +205,24 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 		if (null != message.getPublishTime()) {
 			builder.setPublishTime(message.getPublishTime());
 		}
-
 		// Convert received string to Map<String, String>
 		// Transcoded APIs do not support map<string, string> 
 		if (!message.getAttributes().isEmpty()) {
 			builder.putAllAttributes(new ObjectMapper().readValue(message.getAttributes(), HashMap.class));
 		}
-		
 		// Async call to PubSub
 		ApiFuture<String> future = publisher.publish(builder.build());
 		ApiFutures.addCallback(future, new ApiFutureCallback<String>() {
-
 			// Failed to publish messages downstream
 			public void onFailure(Throwable throwable) {
-
 				if (throwable instanceof ApiException) {
-
 					ApiException apiException = ((ApiException) throwable);
 					logger.severe("Failed to publish message: " + apiException.getMessage());
 
 					// Write failed msgs to a sink: BQ in this case
 					PublishMessageUtils.insertFailedMessagesInBQ(message, apiException);
 				}
-
 			}
-
 			// Successfully published messages downstream
 			public void onSuccess(String msgId) {
 				logger.info("Successfully published: " + msgId);
@@ -263,17 +241,12 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 	 * @throws Exception
 	 */
 	private Publisher getPublisher(String topic) throws IOException {
-
 		// Check if publisher against a topic already exists
 		if (!publishers.containsKey(topic)) {
-
 			// Double checked locking to prevent any race conditions on publisher creation
 			synchronized (PubsubProxyImpl.class) {
-
 				if (!publishers.containsKey(topic)) {
-
 					logger.info("Creating new publisher for: " + topic);
-
 					// Get publisher
 					Publisher publisher = Publisher
 							.newBuilder(ProjectTopicName.of(
@@ -285,7 +258,6 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 				}
 			}
 		}
-
 		return publishers.get(topic);
 	}
 	

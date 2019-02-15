@@ -18,7 +18,6 @@ public class PublishMessageUtils {
 	private final static String timestamp = "TimeStamp";
 	private final static String code = "HttpCode";
 	private final static String statusmsg = "StatusMsg";
-	
 	/**
 	 * Since pubsub writes are asynchronous, the user always gets a 200OK irrespective of what happens downstream.
 	 * Writing to a bq sink allows developers to revisit the failed messages, dissect failures and, if they want, retry messages.
@@ -32,8 +31,6 @@ public class PublishMessageUtils {
 	 * 
 	 */
 	public static void insertFailedMessagesInBQ(org.examples.grpc.pubsub.generated.PubsubMessage msg, ApiException apiException) {
-
-
 		// Read init variables from context and config
 		String dataset = ProxyPropertiesUtils.getPropertyValue("dataset");
 		String table = ProxyPropertiesUtils.getPropertyValue("table");

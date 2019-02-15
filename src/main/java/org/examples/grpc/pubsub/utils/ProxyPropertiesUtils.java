@@ -16,7 +16,6 @@ public class ProxyPropertiesUtils {
 	static {
 		InputStream is = null;
 		try {
-			
 			prop = new Properties();
 			is = ProxyPropertiesUtils.class.getResourceAsStream("/proxy.properties");
 			prop.load(is);
@@ -27,7 +26,6 @@ public class ProxyPropertiesUtils {
 		} 
 	}
 
-	
 	public static String getPropertyValue(String key) {
 		return prop.getProperty(key);
 	}

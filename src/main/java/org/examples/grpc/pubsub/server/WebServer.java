@@ -61,7 +61,6 @@ public class WebServer {
 		}
 	}
 	
-
 	public static void main(String[] args) throws IOException, InterruptedException {
 		final WebServer server = new WebServer();
 		server.start();

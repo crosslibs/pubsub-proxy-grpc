@@ -16,7 +16,6 @@ import io.grpc.Status;
  * Any filteration, authentication etc can be plugged here
  */
 public class GrpcRequestInterceptor implements ServerInterceptor {
-
 	/**
 	 * Special check in place only for getaccesstoken to validate client-id
 	 * 
@@ -28,14 +27,11 @@ public class GrpcRequestInterceptor implements ServerInterceptor {
 			ServerCall<ReqT, RespT> call, 
 			Metadata requestHeaders,
 			ServerCallHandler<ReqT, RespT> next) {
-				
 		ServerCall.Listener<ReqT> listener = next.startCall(call,requestHeaders);
-		
 		if(StringUtils.containsIgnoreCase(call.getMethodDescriptor().getFullMethodName(), "getaccesstoken")) 
 		{			
 			// Client id passed during proxy service start up time
 			String savedClientId = System.getenv("CLIENTID");
-			
 			/**
 			 * Client id received from user request. Request would be of the form: 
 			 * 
@@ -51,10 +47,8 @@ public class GrpcRequestInterceptor implements ServerInterceptor {
 			if(receivedClientId.equals(savedClientId)) {
 				return listener;
 			}
-			
 			call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized Client"), new Metadata());
 		}
-		
 		return listener;
 	}	
 }

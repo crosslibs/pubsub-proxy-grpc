@@ -39,7 +39,6 @@ public class ServerInit {
 	private static String projectId;
 	
 	public static void preStartup() {
-		
 		try 
 		{
 			// Get project id
@@ -99,7 +98,6 @@ public class ServerInit {
 		ServerInit.bigqueryHandler = bigqueryHandler;
 	}
 
-	
 	/**
 	 * Since pubsub writes are asynchronous, the user always gets a 200OK irrespective of what happens downstream.
 	 * Writing to a bq sink allows developers to revisit the failed messages, dissect failures and, if they want, retry messages.
@@ -115,7 +113,6 @@ public class ServerInit {
 	private static void createDataSet(BigQuery bigquery) {
 
 		String datasetName = ProxyPropertiesUtils.getPropertyValue("dataset");
-
 		// Check if dataset exists
 		Dataset dataset = bigquery.getDataset(datasetName);
 		if (null == dataset) {
@@ -125,7 +122,6 @@ public class ServerInit {
 	}
 	
 	private static void createTable(BigQuery bigquery) {
-		
 		String tableName = ProxyPropertiesUtils.getPropertyValue("table");
 		String datasetName = ProxyPropertiesUtils.getPropertyValue("dataset");
 
@@ -155,5 +151,4 @@ public class ServerInit {
 			table = bigquery.create(tableInfo);
 		}
 	}
-
 }
