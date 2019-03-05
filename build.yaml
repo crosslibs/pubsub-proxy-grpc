@@ -1,0 +1,12 @@
+steps:
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/prakhag1/pubsub-proxy-grpc']
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['clean', 'compile', 'assembly:assembly', 'package']
+  dir:  'pubsub-proxy-grpc'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ["build", "--tag=gcr.io/$PROJECT_ID/pubsub-proxy-grpc", "."]
+  dir: 'pubsub-proxy-grpc'
+images: ['gcr.io/$PROJECT_ID/pubsub-proxy-grpc'] 

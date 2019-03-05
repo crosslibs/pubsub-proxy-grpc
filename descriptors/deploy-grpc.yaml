@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pubsub-proxy-grpc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 443
+    protocol: TCP
+    name: https
+  selector:
+    app: pubsub-proxy-grpc
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pubsub-proxy-grpc
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pubsub-proxy-grpc
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: clientsecret
+      - name: nginx-ssl
+        secret:
+          secretName: nginx-ssl
+      containers:
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1.16.0
+        args: [
+                "--ssl_port", "443",  # for gRPC
+                "--service=pubsub-proxy.endpoints.[PROJECT_ID].cloud.goog",
+                "--rollout_strategy=managed",
+                "--backend=grpc://127.0.0.1:80"
+        ]
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - mountPath: /etc/nginx/ssl
+          name: nginx-ssl
+          readOnly: true
+      - name: pubsub-proxy-grpc
+        image: gcr.io/[PROJECT_ID]/pubsub-proxy-grpc:latest
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        - name: CLIENTID
+          valueFrom:
+            secretKeyRef:
+              name: clientsecret
+              key: clientid
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80

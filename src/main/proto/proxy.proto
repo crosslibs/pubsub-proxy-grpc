@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+option java_package = "org.examples.grpc.pubsub.generated";
+option java_multiple_files = true;
+option java_outer_classname = "PubsubProxyProto";
+option objc_class_prefix = "HW";
+
+package org.examples.grpc.pubsub.generated;
+
+import "google/protobuf/timestamp.proto";
+
+// Proxy service definition
+service PubsubProxyService {
+
+  // Health check
+  rpc GetHealth (Void) returns (Void) {}
+  
+  // Get access token for authentication
+  rpc GetAccessToken (TokenRequest) returns (TokenResponse) {}
+  
+  // Publish message to Google Cloud PubSub
+  rpc Publish (PublishRequest) returns (PublishResponse) {}
+}
+
+message TokenRequest {
+}
+
+message TokenResponse {
+  string token = 1;
+}
+
+// Request for the Publish method.
+message PublishRequest {
+
+  // The message in the request will be published on this topic.
+  string topic = 1;
+
+  // Message to publish.
+  PubsubMessage message = 2;
+}
+
+message PubsubMessage {
+  // The message data field. If this field is empty, the message must contain
+  // at least one attribute.
+  string data = 1;
+
+  // Optional attributes for this message.
+  string attributes = 2;
+
+  // ID of this message, assigned by the server when the message is published.
+  // Guaranteed to be unique within the topic. This value may be read by a
+  // subscriber that receives a `PubsubMessage` via a `Pull` call or a push
+  // delivery. It must not be populated by the publisher in a `Publish` call.
+  string message_id = 3;
+
+  // The time at which the message was published, populated by the server when
+  // it receives the `Publish` call. It must not be populated by the
+  // publisher in a `Publish` call.
+  google.protobuf.Timestamp publish_time = 4;
+}
+
+// Response for the `Publish` method.
+message PublishResponse {
+  // The server-assigned ID of each published message. 
+  // IDs are guaranteed to be unique within the topic.
+   string message_id = 1;
+}
+
+message Void {
+}
