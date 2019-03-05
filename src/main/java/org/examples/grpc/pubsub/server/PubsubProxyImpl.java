@@ -101,39 +101,6 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 			e.printStackTrace();
 			// TODO
 		}
-		/**
-		 * 
-		 * Alternate way of signing JWT without requiring json credentials file: 
-		 *
-		 * https://cloud.google.com/iam/reference/rest/v1/projects.serviceAccounts/signJwt
-		 *
-		 * ----------------------------- Sample implementation ------------------------- 
-		 *
-		 *	String SIGN_JWT_ENDPOINT = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/";
-		 *
-		 *	Map<String, String> json = new HashMap<String, String>();
-		 *
-		 *	json.put("payload", "{\"iss\": \"" + <service-account-email> + "\", " + "\"aud\": \"" + <audience> + "\", "
-		 *		+ "\"sub\": \"" + <subject> + "\"}");
-		 *
-		 *	final HttpContent content = new JsonHttpContent(new JacksonFactory(), json);
-		 *
-		 *	final HttpRequest request = 
-		 *		new NetHttpTransport()
-		 *		.createRequestFactory()
-		 *		.buildPostRequest(new GenericUrl(SIGN_JWT_ENDPOINT + <service-account-email> + ":signJwt"), content);
-		 *
-		 *	HttpHeaders headers = request.getHeaders();
-		 *
-		 *  headers.setAuthorization("Bearer " + 
-		 *   		GoogleCredential.getApplicationDefault(Utils.getDefaultTransport(),
-		 *			Utils.getDefaultJsonFactory()).getAccessToken());
-		 *			
-		 * headers.setContentType("text/plain");
-		 *
-		 * System.out.println(request.execute().parseAsString().trim());
-		 * 
-		 */
 	}
 	
 	/**
