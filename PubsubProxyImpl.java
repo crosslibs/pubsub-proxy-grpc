@@ -134,7 +134,7 @@ public class PubsubProxyImpl extends PubsubProxyServiceGrpc.PubsubProxyServiceIm
 			// Get publisher
 			Publisher publisher = getPublisher(topic);
 
-			// Publish message
+			// Publish message 
 			publishMessage(publisher, request);
 
 			// Optional - can add a message id as well below 
