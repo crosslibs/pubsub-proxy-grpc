@@ -1,12 +1,89 @@
 steps:
+
+# Clone the source code
 - name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/prakhag1/pubsub-proxy-grpc']
+  args: 
+      [
+       'clone', 
+       'https://github.com/prakhag1/pubsub-proxy-grpc'
+      ]
 
-- name: 'gcr.io/cloud-builders/mvn'
-  args: ['clean', 'compile', 'assembly:assembly', 'package']
-  dir:  'pubsub-proxy-grpc'
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: ["build", "--tag=gcr.io/$PROJECT_ID/pubsub-proxy-grpc", "."]
+# Replace all the project_id and service account placeholders 
+- name: 'ubuntu'
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - | 
+    sed -i -e "s/\[PROJECT_ID\]/$PROJECT_ID/g" descriptors/*.yaml && \
+    sed -i -e "s/\[SERVICE_ACCOUNT_EMAIL\]/${_SA_EMAIL}/g" descriptors/api_config_http.yaml
   dir: 'pubsub-proxy-grpc'
-images: ['gcr.io/$PROJECT_ID/pubsub-proxy-grpc'] 
+
+# Maven package
+- name: 'gcr.io/cloud-builders/mvn'
+  args: 
+      [
+       'clean', 
+       'compile', 
+       'assembly:assembly', 
+       'package'
+      ]
+  dir: 'pubsub-proxy-grpc'
+
+# Build application image
+- name: 'gcr.io/cloud-builders/docker'
+  args: 
+      [
+       "build", 
+       "--tag=gcr.io/$PROJECT_ID/pubsub-proxy-grpc", 
+       "."
+      ]
+ dir: 'pubsub-proxy-grpc'
+
+# Create custom builder for protoc
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+      [
+        'build',
+        '-f',
+        'Dockerfile.protoc',
+        '--tag',
+        'gcr.io/$PROJECT_ID/protoc',
+        '--cache-from',
+        'gcr.io/$PROJECT_ID/protoc',
+        '.'
+      ]
+  dir: 'pubsub-proxy-grpc'
+
+# Get googleapis required to build descriptor pb
+- name: 'gcr.io/cloud-builders/git'
+  args:
+      [
+        'clone',
+        'https://github.com/googleapis/googleapis'
+      ]
+  dir: 'pubsub-proxy-grpc'
+
+
+# Generate api descriptor manifest and store the artifact in GCS 
+- name: 'gcr.io/$PROJECT_ID/protoc'
+  args:
+      [
+        '-I.',
+        '--include_imports',
+        '--include_source_info',
+        '--proto_path=./googleapis/',
+        '--descriptor_set_out=api_descriptor.pb',
+        'proto/proxy.proto'
+      ]
+  dir: 'pubsub-proxy-grpc'
+artifacts:
+  objects:
+    location: "gs://${_ARTIFACT}/"
+    paths: ['api_descriptor.pb']
+
+substitutions:
+    _SA_EMAIL: [SA_EMAIL]
+    _ARTIFACT: [ARTIFACT]
+
+images: 
+- 'gcr.io/$PROJECT_ID/pubsub-proxy-grpc'
