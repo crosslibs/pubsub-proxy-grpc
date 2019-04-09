@@ -51,7 +51,7 @@ steps:
         '--include_source_info',
         '--proto_path=./googleapis/',
         '--descriptor_set_out=api_descriptor.pb',
-        'proto/proxy.proto'
+        'descriptors/proxy.proto'
       ]
   dir: 'pubsub-proxy-grpc'
 artifacts:
