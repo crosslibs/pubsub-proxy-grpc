@@ -3,7 +3,9 @@ package org.examples.grpc.pubsub;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
+
 import org.examples.grpc.pubsub.PubsubProxyServiceGrpc.PubsubProxyServiceImplBase;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
@@ -16,6 +18,8 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage.Builder;
 import com.google.pubsub.v1.PubsubMessage;
+
+
 import io.grpc.stub.StreamObserver;
 
 public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
@@ -39,7 +43,7 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 	
 	@SuppressWarnings("unchecked")
 	private void publishMessage(Publisher publisher, PublishRequest request) throws Exception {
-		final org.examples.grpc.pubsub.PubsubMessage message = request.getMessage();
+		final org.examples.grpc.pubsub.PubMessage message = request.getMessage();
 		Builder builder = PubsubMessage.newBuilder();
 		
 		if (!message.getData().isEmpty()) {
@@ -64,6 +68,7 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 			public void onFailure(Throwable throwable) {
 				if (throwable instanceof ApiException) {
 					ApiException apiException = ((ApiException) throwable);
+					apiException.printStackTrace();
 					logger.severe("Failed to publish message: " + apiException.getMessage());
 				}
 			}

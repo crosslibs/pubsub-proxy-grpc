@@ -30,12 +30,13 @@ public class Client {
 
 	@SuppressWarnings("unused")
 	public void publish() {
-		PubsubMessage msg = PubsubMessage.newBuilder()
+		PubMessage msg = PubMessage.newBuilder()
 				.setData("<data>")
 				.setMessageId("<message-id>")
-				.setAttributes("{\"key\": \"value\"}").build();
+				.setAttributes("{\"key\": \"value\"}")
+				.build();
 		PublishRequest pubreq = PublishRequest.newBuilder()
-				.setTopic("PUBSUB_TOPIC")
+				.setTopic("test")
 				.setMessage(msg).build();
 
 		try {

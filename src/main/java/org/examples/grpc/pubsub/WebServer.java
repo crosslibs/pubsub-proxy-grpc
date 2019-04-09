@@ -10,7 +10,7 @@ public class WebServer {
 
 	private static final Logger logger = Logger.getLogger(WebServer.class.getName());
 	private Server server;
-
+	
 	private void start() throws IOException {
 		int port = 80;
 		server = ServerBuilder.forPort(port).addService(new PubsubProxyImpl()).build().start();
