@@ -23,9 +23,6 @@ spec:
         app: pubsub-proxy-grpc
     spec:
       volumes:
-      - name: google-cloud-key
-        secret:
-          secretName: clientsecret
       - name: nginx-ssl
         secret:
           secretName: nginx-ssl
@@ -49,14 +46,6 @@ spec:
         volumeMounts:
         - name: google-cloud-key
           mountPath: /var/secrets/google
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/key.json
-        - name: CLIENTID
-          valueFrom:
-            secretKeyRef:
-              name: clientsecret
-              key: clientid
         imagePullPolicy: Always
         ports:
           - containerPort: 80

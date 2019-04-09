@@ -1,33 +1,23 @@
 type: google.api.Service
 config_version: 3
 
-
 # Name of the service configuration.
-#
 name: pubsub-proxy.endpoints.[PROJECT_ID].cloud.goog
 
 # HTTP rules define translation from HTTP/REST/JSON to gRPC. With these rules
 # HTTP/REST/JSON clients will be able to call the Bookstore service.
-#
 http:
   rules:
-  #
   # Client example (Assuming your service is hosted at the given 'DOMAIN_NAME'):
-  #   curl http://DOMAIN_NAME/v1/health
-  #
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.GetHealth
+  # curl http://DOMAIN_NAME/v1/health
+  - selector: org.examples.grpc.pubsub.PubsubProxyService.GetHealth
     get: /health
 
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.GetAccessToken
-    get: /getaccesstoken
-
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.Publish
+  - selector: org.examples.grpc.pubsub.PubsubProxyService.Publish
     post: /publish
     body: "*"
 
-
 # Request authentication.
-#
 authentication:
   providers:
   - id: google_service_account

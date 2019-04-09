@@ -1,9 +1,7 @@
 type: google.api.Service
 config_version: 3
 
-#
 # Name of the service configuration.
-#
 name: pubsub-proxy.endpoints.[PROJECT_ID].cloud.goog
 
 title: Pubsub gRPC API
@@ -12,9 +10,7 @@ apis:
 
 usage:
   rules:
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.GetAccessToken
+  - selector: org.examples.grpc.pubsub.PubsubProxyService.GetHealth
     allow_unregistered_calls: true
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.GetHealth
-    allow_unregistered_calls: true
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.Publish
+  - selector: org.examples.grpc.pubsub.PubsubProxyService.Publish
     allow_unregistered_calls: true

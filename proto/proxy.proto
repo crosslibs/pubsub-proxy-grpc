@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option java_package = "org.examples.grpc.pubsub.generated";
+option java_package = "org.examples.grpc.pubsub";
 option java_multiple_files = true;
-option java_outer_classname = "PubsubProxyProto";
+option java_outer_classname = "ProxyProto";
 option objc_class_prefix = "HW";
 
-package org.examples.grpc.pubsub.generated;
+package org.examples.grpc.pubsub;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
@@ -16,29 +16,16 @@ service PubsubProxyService {
   // Health check
   rpc GetHealth (Void) returns (Void) {
         // curl http://DOMAIN_NAME/health
-        option (google.api.http) = { get: "/health" };
-  }
-
-  // Get access token for authentication
-  rpc GetAccessToken (TokenRequest) returns (TokenResponse) {
-	// curl http://DOMAIN_NAME/getaccesstoken
-        option (google.api.http) = { get: "/getaccesstoken" };
+        //option (google.api.http) = { get: "/health" };
   }
   
   // Publish message to Google Cloud PubSub
   rpc Publish(PublishRequest) returns (PublishResponse) {
-    option (google.api.http) = {
-      post: "/publish"
-      body: "*"
-    };
+    //option (google.api.http) = {
+    //  post: "/publish"
+    //  body: "*"
+   // };
   }
-}
-
-message TokenRequest {
-}
-
-message TokenResponse {
-  string token = 1;
 }
 
 // Request for the Publish method.
