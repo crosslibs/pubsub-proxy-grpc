@@ -27,7 +27,7 @@ steps:
        "--tag=gcr.io/$PROJECT_ID/pubsub-proxy-grpc", 
        "."
       ]
- dir: 'pubsub-proxy-grpc'
+  dir: 'pubsub-proxy-grpc'
 
 images: 
 - 'gcr.io/$PROJECT_ID/pubsub-proxy-grpc'
