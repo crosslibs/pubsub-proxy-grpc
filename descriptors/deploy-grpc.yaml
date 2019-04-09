@@ -43,9 +43,6 @@ spec:
           readOnly: true
       - name: pubsub-proxy-grpc
         image: gcr.io/[PROJECT_ID]/pubsub-proxy-grpc:latest
-        volumeMounts:
-        - name: google-cloud-key
-          mountPath: /var/secrets/google
         imagePullPolicy: Always
         ports:
           - containerPort: 80
