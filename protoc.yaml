@@ -44,10 +44,11 @@ steps:
         'descriptors/proxy.proto'
       ]
   dir: 'pubsub-proxy-grpc'
+
 artifacts:
   objects:
     location: "gs://${_ARTIFACT}/"
-    paths: ['api_descriptor.pb']
+    paths: ['pubsub-proxy-grpc/api_descriptor.pb']
 
 substitutions:
     _ARTIFACT: [ARTIFACT]
