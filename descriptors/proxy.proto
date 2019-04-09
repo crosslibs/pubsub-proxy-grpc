@@ -34,10 +34,10 @@ message PublishRequest {
   string topic = 1;
 
   // Message to publish.
-  PubsubMessage message = 2;
+  PubMessage message = 2;
 }
 
-message PubsubMessage {
+message PubMessage {
   
   // The message data field. If this field is empty, the message must contain
   // at least one attribute.
