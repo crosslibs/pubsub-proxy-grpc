@@ -26,6 +26,6 @@ authentication:
   
   # Validate access to /publish
   rules:
-  - selector: org.examples.grpc.pubsub.generated.PubsubProxyService.Publish
+  - selector: org.examples.grpc.pubsub.PubsubProxyService.Publish
     requirements:
       - provider_id: google_service_account

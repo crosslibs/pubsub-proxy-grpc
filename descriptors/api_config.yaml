@@ -6,7 +6,7 @@ name: pubsub-proxy.endpoints.[PROJECT_ID].cloud.goog
 
 title: Pubsub gRPC API
 apis:
-- name: org.examples.grpc.pubsub.generated.PubsubProxyService
+- name: org.examples.grpc.pubsub.PubsubProxyService
 
 usage:
   rules:
