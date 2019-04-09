@@ -1,11 +1,10 @@
 syntax = "proto3";
 
-option java_package = "org.examples.grpc.pubsub.generated";
+option java_package = "org.examples.grpc.pubsub";
 option java_multiple_files = true;
 option java_outer_classname = "PubsubProxyProto";
-option objc_class_prefix = "HW";
 
-package org.examples.grpc.pubsub.generated;
+package org.examples.grpc.pubsub;
 
 import "google/protobuf/timestamp.proto";
 
@@ -14,19 +13,9 @@ service PubsubProxyService {
 
   // Health check
   rpc GetHealth (Void) returns (Void) {}
-  
-  // Get access token for authentication
-  rpc GetAccessToken (TokenRequest) returns (TokenResponse) {}
-  
+    
   // Publish message to Google Cloud PubSub
   rpc Publish (PublishRequest) returns (PublishResponse) {}
-}
-
-message TokenRequest {
-}
-
-message TokenResponse {
-  string token = 1;
 }
 
 // Request for the Publish method.
