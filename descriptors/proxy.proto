@@ -2,8 +2,7 @@ syntax = "proto3";
 
 option java_package = "org.examples.grpc.pubsub";
 option java_multiple_files = true;
-option java_outer_classname = "ProxyProto";
-option objc_class_prefix = "HW";
+option java_outer_classname = "PubsubProxyProto";
 
 package org.examples.grpc.pubsub;
 
@@ -16,15 +15,15 @@ service PubsubProxyService {
   // Health check
   rpc GetHealth (Void) returns (Void) {
         // curl http://DOMAIN_NAME/health
-        //option (google.api.http) = { get: "/health" };
+        option (google.api.http) = { get: "/health" };
   }
   
   // Publish message to Google Cloud PubSub
   rpc Publish(PublishRequest) returns (PublishResponse) {
-    //option (google.api.http) = {
-    //  post: "/publish"
-    //  body: "*"
-   // };
+    option (google.api.http) = {
+      post: "/publish"
+      body: "*"
+    };
   }
 }
 
@@ -66,5 +65,4 @@ message PublishResponse {
   string message_ids = 1;
 }
 
-message Void {
-}
+message Void { }
