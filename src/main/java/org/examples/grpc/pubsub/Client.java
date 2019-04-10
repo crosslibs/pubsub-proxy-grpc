@@ -30,7 +30,7 @@ public class Client {
 	private static final Logger logger = Logger.getLogger(Client.class.getName());
 	private final ManagedChannel channel;
 	private final PubsubProxyServiceBlockingStub blockingStub;
-
+	
 	/**
 	 * Construct client connecting to WebServer at {@code host:port}.  
 	 * @param host
@@ -39,7 +39,6 @@ public class Client {
 	 */
 	public Client(String host, int port) throws Exception {
 		this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build());
-
 	}
 	
 	/**
