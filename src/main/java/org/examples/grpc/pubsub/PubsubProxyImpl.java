@@ -1,11 +1,23 @@
+/* Copyright 2019 Google Inc. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License. */
+
 package org.examples.grpc.pubsub;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import org.examples.grpc.pubsub.PubsubProxyServiceGrpc.PubsubProxyServiceImplBase;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
@@ -18,8 +30,6 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage.Builder;
 import com.google.pubsub.v1.PubsubMessage;
-
-
 import io.grpc.stub.StreamObserver;
 
 public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
@@ -27,6 +37,11 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 	private HashMap<String, Publisher> publishers = new HashMap<String, Publisher>();
 	private static final Logger logger = Logger.getLogger(PubsubProxyImpl.class.getName());
 	
+	/**
+	 * Publish Request
+	 * @param request
+	 * @param responseObserver
+	 */
 	public void publish(PublishRequest request, StreamObserver<PublishResponse> responseObserver) {
 		try {
 			String topic = request.getTopic();
@@ -41,6 +56,13 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 		}
 	}
 	
+	/**
+	 * Populates PubSub publisher
+	 * Publishes messages downstream
+	 * @param publisher
+	 * @param request
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	private void publishMessage(Publisher publisher, PublishRequest request) throws Exception {
 		final org.examples.grpc.pubsub.PubMessage message = request.getMessage();
@@ -79,6 +101,12 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 		}, MoreExecutors.directExecutor());
 	}
 
+	/**
+	 * Creates PubSub publisher if one doesn't exist
+	 * @param topic
+	 * @return
+	 * @throws IOException
+	 */
 	private Publisher getPublisher(String topic) throws IOException {
 		if (!publishers.containsKey(topic)) {
 			synchronized (PubsubProxyImpl.class) {
@@ -94,6 +122,8 @@ public class PubsubProxyImpl extends PubsubProxyServiceImplBase {
 	
 	/**
 	 * Health check- returns 200OK
+	 * @param request
+	 * @param responseObserver
 	 */
 	@Override
 	public void getHealth(org.examples.grpc.pubsub.Void request,
